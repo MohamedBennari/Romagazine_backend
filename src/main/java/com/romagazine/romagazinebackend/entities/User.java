@@ -1,8 +1,13 @@
 package com.romagazine.romagazinebackend.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore; import jakarta.persistence.*; import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
+import lombok.Data;
 
-import java.time.LocalDateTime; import java.util.ArrayList; import java.util.List;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity @Table(name = "users") @Data public class User { @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
 
@@ -13,7 +18,7 @@ import java.time.LocalDateTime; import java.util.ArrayList; import java.util.Lis
     private String email;
 
     @Column(nullable = false)
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Column
@@ -38,6 +43,22 @@ import java.time.LocalDateTime; import java.util.ArrayList; import java.util.Lis
 
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column
+    @JsonIgnore
+    private String resetToken;
+
+    @Column
+    @JsonIgnore
+    private LocalDateTime resetTokenExpiry;
+
+    @Column
+    @JsonIgnore
+    private String verificationToken;
+
+    @Column
+    @JsonIgnore
+    private LocalDateTime verificationTokenExpiry;
 
     @ManyToMany(mappedBy = "interested")
     @JsonIgnore
@@ -155,6 +176,38 @@ import java.time.LocalDateTime; import java.util.ArrayList; import java.util.Lis
 
     public void setInterestedEvents(List<Event> interestedEvents) {
         this.interestedEvents = interestedEvents;
+    }
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public LocalDateTime getResetTokenExpiry() {
+        return resetTokenExpiry;
+    }
+
+    public void setResetTokenExpiry(LocalDateTime resetTokenExpiry) {
+        this.resetTokenExpiry = resetTokenExpiry;
+    }
+
+    public String getVerificationToken() {
+        return verificationToken;
+    }
+
+    public void setVerificationToken(String verificationToken) {
+        this.verificationToken = verificationToken;
+    }
+
+    public LocalDateTime getVerificationTokenExpiry() {
+        return verificationTokenExpiry;
+    }
+
+    public void setVerificationTokenExpiry(LocalDateTime verificationTokenExpiry) {
+        this.verificationTokenExpiry = verificationTokenExpiry;
     }
 
     @Override
