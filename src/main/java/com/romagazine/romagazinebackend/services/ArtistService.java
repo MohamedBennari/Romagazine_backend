@@ -68,4 +68,8 @@ public class ArtistService {
         artistRepository.delete(artist);
     }
 
+    public List<Artist> getVeilhushArtists() {
+        return artistRepository.findByVeilhushArtistTrue();
+    }
+
 }

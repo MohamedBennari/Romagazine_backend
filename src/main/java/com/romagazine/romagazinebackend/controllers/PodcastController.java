@@ -73,14 +73,13 @@ public class PodcastController {
 
     @Operation(summary = "Upload podcast image", description = "Upload an image for a specific podcast")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Image uploaded successfully",
-            content = @Content(mediaType = "application/json",
-                schema = @Schema(implementation = Podcast.class))),
-        @ApiResponse(responseCode = "400", description = "Invalid image file"),
-        @ApiResponse(responseCode = "404", description = "Podcast not found"),
-        @ApiResponse(responseCode = "500", description = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Image uploaded successfully",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Podcast.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid image file"),
+            @ApiResponse(responseCode = "404", description = "Podcast not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    
     @PostMapping(value = "/{id}/upload-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Podcast> uploadPodcastImage(
             @Parameter(description = "Podcast ID", required = true) @PathVariable Long id,
@@ -104,5 +103,4 @@ public class PodcastController {
             return ResponseEntity.internalServerError().build();
         }
     }
-
 }

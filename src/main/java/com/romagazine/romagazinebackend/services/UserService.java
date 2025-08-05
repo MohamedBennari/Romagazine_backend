@@ -1,6 +1,7 @@
 package com.romagazine.romagazinebackend.services;
 
 import com.romagazine.romagazinebackend.entities.User;
+import com.romagazine.romagazinebackend.enums.Role;
 import com.romagazine.romagazinebackend.enums.Status;
 import com.romagazine.romagazinebackend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,10 +57,10 @@ public class UserService {
         user.setActive(true);
         // Set default role and status if not provided
         if (user.getRole() == null) {
-            user.setRole("USER");
+            user.setRole(Role.CREW);
         }
         if (user.getStatus() == null) {
-            user.setStatus(Status.PENDING.name());
+            user.setStatus(Status.PENDING);
         }
 
         // Generate verification token
@@ -91,6 +92,7 @@ public class UserService {
         }
         user.setProfilePicture(updatedUser.getProfilePicture());
         user.setLastName(updatedUser.getLastName());
+        user.setName(updatedUser.getName());
         user.setPhoneNumber(updatedUser.getPhoneNumber());
         user.setRole(updatedUser.getRole());
         user.setStatus(updatedUser.getStatus());
@@ -153,9 +155,13 @@ public class UserService {
             throw new RuntimeException("Verification token has expired");
         }
 
-        user.setStatus(Status.APPROVED.name());
+        user.setStatus(Status.APPROVED);
         user.setVerificationToken(null);
         user.setVerificationTokenExpiry(null);
         userRepository.save(user);
+    }
+
+    public User saveUser(User user) {
+        return userRepository.save(user);
     }
 }

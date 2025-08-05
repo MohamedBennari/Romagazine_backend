@@ -47,7 +47,16 @@ public class PodcastService {
     public Podcast updatePodcast(Long id, Podcast podcastDetails) {
         Podcast podcast = podcastRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Podcast not found with id " + id));
-        
+
+        // Only update allowed fields
+        podcast.setTitle(podcastDetails.getTitle());
+        podcast.setDescription(podcastDetails.getDescription());
+        podcast.setSoundcloudLink(podcastDetails.getSoundcloudLink());
+        podcast.setImage(podcastDetails.getImage());
+        podcast.setPublishedAt(podcastDetails.getPublishedAt());
+        podcast.setActive(podcastDetails.isActive());
+        podcast.setUpdatedAt(LocalDateTime.now());
+
         // Load artists properly if they're being updated
         if (podcastDetails.getArtists() != null && !podcastDetails.getArtists().isEmpty()) {
             List<Artist> artists = podcastDetails.getArtists().stream()
@@ -56,14 +65,7 @@ public class PodcastService {
                     .collect(Collectors.toList());
             podcast.setArtists(artists);
         }
-        
-        podcast.setTitle(podcastDetails.getTitle());
-        podcast.setDescription(podcastDetails.getDescription());
-        podcast.setSoundcloudLink(podcastDetails.getSoundcloudLink());
-        podcast.setImage(podcastDetails.getImage());
-        podcast.setPublishedAt(podcastDetails.getPublishedAt());
-        podcast.setActive(podcastDetails.isActive());
-        podcast.setUpdatedAt(LocalDateTime.now());
+
         return podcastRepository.save(podcast);
     }
 

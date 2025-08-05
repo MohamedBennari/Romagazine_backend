@@ -68,6 +68,7 @@ public class Artist {
             joinColumns = @JoinColumn(name = "artist_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id")
     )
+    @JsonIgnoreProperties("lineup")
     private List<Event> events = new ArrayList<>();
 
     @Column(nullable = false)

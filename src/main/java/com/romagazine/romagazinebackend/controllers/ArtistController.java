@@ -71,6 +71,15 @@ public class ArtistController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping(params = "veilhush")
+    public List<Artist> getVeilhushArtists(@RequestParam boolean veilhush) {
+        if (veilhush) {
+            return artistService.getVeilhushArtists();
+        } else {
+            return artistService.getAllArtists();
+        }
+    }
+
     @Operation(summary = "Upload artist profile picture", description = "Upload a profile picture for a specific artist")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Profile picture uploaded successfully",

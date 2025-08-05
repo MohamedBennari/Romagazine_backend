@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ImageUtils {
     private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList("jpg", "jpeg", "png", "gif");
-    private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+    private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
     public static boolean isValidImage(MultipartFile file) {
         if (file == null || file.isEmpty()) {
@@ -48,6 +48,6 @@ public class ImageUtils {
         if (filename == null || filename.isEmpty()) {
             return null;
         }
-        return "/api/images/" + filename;
+        return filename;
     }
 } 

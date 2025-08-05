@@ -1,5 +1,6 @@
 package com.romagazine.romagazinebackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -58,6 +59,8 @@ public class Event {
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "artist_id")
     )
+
+    @JsonIgnoreProperties("events")
     private List<Artist> lineup = new ArrayList<>();
 
     @ElementCollection

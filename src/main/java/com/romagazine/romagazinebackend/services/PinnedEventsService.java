@@ -37,28 +37,39 @@ public class PinnedEventsService {
 
     @Transactional
     public PinnedEvents createPinnedEvent(PinnedEvents pinnedEvent) {
-        // Ensure position is unique
-        Optional<PinnedEvents> existing = pinnedEventsRepository.findByPosition(pinnedEvent.getPosition());
-        if (existing.isPresent()) {
-            throw new RuntimeException("Position " + pinnedEvent.getPosition() + " is already taken.");
-        }
+        // If another event is already pinned at this position, delete it
+        pinnedEventsRepository.findByPosition(pinnedEvent.getPosition())
+                .ifPresent(existing -> pinnedEventsRepository.delete(existing));
+
+        // If this event is already pinned elsewhere, delete it too
+        pinnedEventsRepository.findByEventId(pinnedEvent.getEvent().getId())
+                .ifPresent(existing -> pinnedEventsRepository.delete(existing));
+
         return pinnedEventsRepository.save(pinnedEvent);
     }
 
     @Transactional
     public PinnedEvents updatePinnedEvent(Long id, PinnedEvents pinnedEventDetails) {
-        PinnedEvents pinnedEvent = pinnedEventsRepository.findById(id)
+        PinnedEvents existing = pinnedEventsRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pinned event not found with id " + id));
-        // Ensure position is unique if it’s being changed
-        if (pinnedEvent.getPosition() != pinnedEventDetails.getPosition()) {
-            Optional<PinnedEvents> existing = pinnedEventsRepository.findByPosition(pinnedEventDetails.getPosition());
-            if (existing.isPresent()) {
-                throw new RuntimeException("Position " + pinnedEventDetails.getPosition() + " is already taken.");
+
+        // If position is changed and already taken by another, delete the other
+        pinnedEventsRepository.findByPosition(pinnedEventDetails.getPosition()).ifPresent(other -> {
+            if (!other.getId().equals(id)) {
+                pinnedEventsRepository.delete(other);
             }
-        }
-        pinnedEvent.setEvent(pinnedEventDetails.getEvent());
-        pinnedEvent.setPosition(pinnedEventDetails.getPosition());
-        return pinnedEventsRepository.save(pinnedEvent);
+        });
+
+        // If event is changed and already pinned elsewhere, delete the other
+        pinnedEventsRepository.findByEventId(pinnedEventDetails.getEvent().getId()).ifPresent(other -> {
+            if (!other.getId().equals(id)) {
+                pinnedEventsRepository.delete(other);
+            }
+        });
+
+        existing.setEvent(pinnedEventDetails.getEvent());
+        existing.setPosition(pinnedEventDetails.getPosition());
+        return pinnedEventsRepository.save(existing);
     }
 
     @Transactional
@@ -67,5 +78,4 @@ public class PinnedEventsService {
                 .orElseThrow(() -> new RuntimeException("Pinned event not found with id " + id));
         pinnedEventsRepository.delete(pinnedEvent);
     }
-
 }

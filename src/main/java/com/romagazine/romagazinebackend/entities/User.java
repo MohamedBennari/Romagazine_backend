@@ -9,7 +9,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity @Table(name = "users") @Data public class User { @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
+@Entity @Table(name = "users")
+@Data
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -21,16 +26,19 @@ import java.util.List;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    @Enumerated(EnumType.STRING)
     @Column
-    @JsonIgnore
-    private String role;
+    private com.romagazine.romagazinebackend.enums.Role role;
 
+    @Enumerated(EnumType.STRING)
     @Column
-    @JsonIgnore
-    private String status;
+    private com.romagazine.romagazinebackend.enums.Status status;
 
     @Column
     private String profilePicture;
+
+    @Column
+    private String name;
 
     @Column
     private String lastName;
@@ -67,7 +75,7 @@ import java.util.List;
     public User() {
     }
 
-    public User(Long id, String username, String email, String password, String role, String status, String profilePicture, String lastName, String phoneNumber, boolean isActive, LocalDateTime createdAt, List<Event> interestedEvents) {
+    public User(Long id, String username, String email, String password, com.romagazine.romagazinebackend.enums.Role role, com.romagazine.romagazinebackend.enums.Status status, String profilePicture, String lastName, String name, String phoneNumber, boolean isActive, LocalDateTime createdAt, List<Event> interestedEvents) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -76,6 +84,7 @@ import java.util.List;
         this.status = status;
         this.profilePicture = profilePicture;
         this.lastName = lastName;
+        this.name= name;
         this.phoneNumber = phoneNumber;
         this.isActive = isActive();
         this.createdAt = createdAt;
@@ -114,19 +123,19 @@ import java.util.List;
         this.password = password;
     }
 
-    public String getRole() {
+    public com.romagazine.romagazinebackend.enums.Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(com.romagazine.romagazinebackend.enums.Role role) {
         this.role = role;
     }
 
-    public String getStatus() {
+    public com.romagazine.romagazinebackend.enums.Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(com.romagazine.romagazinebackend.enums.Status status) {
         this.status = status;
     }
 
@@ -144,6 +153,14 @@ import java.util.List;
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPhoneNumber() {
@@ -220,6 +237,7 @@ import java.util.List;
                 ", role='" + role + '\'' +
                 ", status='" + status + '\'' +
                 ", profilePicture='" + profilePicture + '\'' +
+                ", name='" + name + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", active=" + isActive +

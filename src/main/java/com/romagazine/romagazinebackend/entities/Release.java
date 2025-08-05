@@ -33,7 +33,7 @@ public class Release {
     private String purchaseLink;
 
     @Column(nullable = false)
-    private String type; //EP/ALBUM/LP...
+    private String type; //EP/ALBUM/LP/SINGLE
 
     @Column(nullable = false)
     private boolean veilhushRelease = false;

@@ -1,11 +1,22 @@
 package com.romagazine.romagazinebackend.controllers;
 
+import com.romagazine.romagazinebackend.entities.Podcast;
 import com.romagazine.romagazinebackend.entities.Release;
 import com.romagazine.romagazinebackend.services.ReleaseService;
+import com.romagazine.romagazinebackend.services.FileStorageService;
+import com.romagazine.romagazinebackend.utils.ImageUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -18,6 +29,9 @@ public class ReleaseController {
 
     @Autowired
     private ReleaseService releaseService;
+
+    @Autowired
+    private FileStorageService fileStorageService;
 
     @GetMapping
     public List<Release> getAllReleases() {
@@ -66,6 +80,40 @@ public class ReleaseController {
     public ResponseEntity<Void> deleteRelease(@PathVariable Long id) {
         releaseService.deleteRelease(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Upload Release image", description = "Upload an image for a specific Release")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Image uploaded successfully",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Release.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid image file"),
+            @ApiResponse(responseCode = "404", description = "Release not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+
+    @PostMapping(value = "/{id}/upload-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Release> uploadReleaseImage(
+            @Parameter(description = "Release ID", required = true) @PathVariable Long id,
+            @Parameter(description = "Image file to upload", required = true)
+            @RequestParam("file") MultipartFile file) {
+        try {
+            if (!ImageUtils.isValidImage(file)) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            String filename = fileStorageService.storeFile(file);
+            String imageUrl = ImageUtils.generateImageUrl(filename);
+
+            Release release = releaseService.getReleaseById(id)
+                    .orElseThrow(() -> new RuntimeException("Podcast not found"));
+
+            release.setImage(imageUrl);
+            Release updatedRelease = releaseService.updateRelease(id, release);
+            return ResponseEntity.ok(updatedRelease);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
 }

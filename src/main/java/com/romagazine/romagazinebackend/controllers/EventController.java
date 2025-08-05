@@ -38,6 +38,11 @@ public class EventController {
     @Autowired
     private FileStorageService fileStorageService;
 
+    @GetMapping("/active")
+    public List<Event> getAllactiveEvents() {
+        return eventService.getAllactiveEvents();
+    }
+
     @GetMapping
     public List<Event> getAllEvents() {
         return eventService.getAllEvents();

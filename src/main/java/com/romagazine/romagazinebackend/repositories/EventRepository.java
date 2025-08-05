@@ -10,5 +10,6 @@ import java.time.LocalDateTime; import java.util.List;
 public interface EventRepository extends JpaRepository<Event, Long> {
     List findByLocation(String location);
     List findByStartDateBetween(LocalDateTime start, LocalDateTime end);
-    List findByBannerTrue(); List findByIsActiveTrue();
+    List findByBannerTrue();
+    List findByIsActiveTrue();
 }

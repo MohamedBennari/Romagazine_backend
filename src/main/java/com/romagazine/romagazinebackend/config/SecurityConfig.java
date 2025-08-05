@@ -42,6 +42,7 @@ public class SecurityConfig {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
+                .httpBasic(httpBasic -> httpBasic.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize ->
                         // Public endpoints
@@ -52,7 +53,17 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/verify-email").permitAll()
                         .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()
-                        
+                        .requestMatchers("/api/users/**").permitAll()
+                        .requestMatchers("/api/events/**").permitAll()
+                        .requestMatchers("/api/artists/**").permitAll()
+                        .requestMatchers("/api/articles/**").permitAll()
+                        .requestMatchers("/api/comments/**").permitAll()
+                        .requestMatchers("/api/pinned-events/**").permitAll()
+                        .requestMatchers("/api/artists/**").permitAll()
+                        .requestMatchers("/api/podcasts/**").permitAll()
+                        .requestMatchers("/api/releases/**").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
+
                         // All other endpoints require authentication
                         .anyRequest().authenticated()
                 )
@@ -74,7 +85,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         logger.info("Configuring CORS");
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:8081"));
+        configuration.addAllowedOriginPattern("*");
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

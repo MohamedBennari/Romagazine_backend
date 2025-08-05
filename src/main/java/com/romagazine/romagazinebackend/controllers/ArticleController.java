@@ -100,6 +100,7 @@ public class ArticleController {
             Article updatedArticle = articleService.updateArticle(id, article);
             return ResponseEntity.ok(updatedArticle);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }

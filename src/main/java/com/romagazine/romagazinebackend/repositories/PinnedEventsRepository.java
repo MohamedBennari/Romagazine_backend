@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @RepositoryRestResource(exported = false)
 public interface PinnedEventsRepository extends JpaRepository<PinnedEvents, Long> {
-    List findByOrderByPositionAsc();
-    Optional findByEventId(Long eventId);
-    Optional findByPosition(int position);
+    List<PinnedEvents> findByOrderByPositionAsc();
+    Optional<PinnedEvents> findByEventId(Long eventId);
+    Optional<PinnedEvents> findByPosition(int position);
 }
