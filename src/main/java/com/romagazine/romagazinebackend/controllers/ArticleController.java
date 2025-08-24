@@ -7,6 +7,7 @@ import com.romagazine.romagazinebackend.utils.ImageUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -52,6 +53,7 @@ public class ArticleController {
         return articleService.getArticlesByTag(tag);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'COPYWRITER')")
     @PostMapping
     public ResponseEntity<Article> createArticle(@Valid @RequestBody Article article) {
         Article savedArticle = articleService.createArticle(article);
@@ -62,12 +64,14 @@ public class ArticleController {
         return ResponseEntity.created(location).body(savedArticle);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'COPYWRITER')")
     @PutMapping("/{id}")
     public ResponseEntity<Article> updateArticle(@PathVariable Long id, @Valid @RequestBody Article article) {
         Article updatedArticle = articleService.updateArticle(id, article);
         return ResponseEntity.ok(updatedArticle);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'COPYWRITER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteArticle(@PathVariable Long id) {
         articleService.deleteArticle(id);

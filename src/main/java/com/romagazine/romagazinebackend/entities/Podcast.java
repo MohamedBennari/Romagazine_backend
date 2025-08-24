@@ -35,6 +35,11 @@ public class Podcast {
     @JsonIgnoreProperties({"events", "user.password", "user.phoneNumber", "user.isActive"})
     private List<Artist> artists = new ArrayList<>();
 
+    @ElementCollection
+    @CollectionTable(name = "podcast_second_artists", joinColumns = @JoinColumn(name = "podcast_id"))
+    @Column(name = "artist_name")
+    private List<String> secondArtists = new ArrayList<>();
+
     @Column
     private String image;
 
@@ -53,17 +58,26 @@ public class Podcast {
     public Podcast() {
     }
 
-    public Podcast(Long id, String title, String description, String soundcloudLink, List<Artist> artists, String image, LocalDateTime publishedAt, boolean isActive, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Podcast(Long id, String title, String description,List<String> secondArtists, String soundcloudLink, List<Artist> artists, String image, LocalDateTime publishedAt, boolean isActive, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.soundcloudLink = soundcloudLink;
         this.artists = artists;
+        this.secondArtists = secondArtists;
         this.image = image;
         this.publishedAt = publishedAt;
         this.isActive = isActive;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public List<String> getSecondArtists() {
+        return secondArtists;
+    }
+
+    public void setSecondArtists(List<String> secondArtists) {
+        this.secondArtists = secondArtists;
     }
 
     public Long getId() {

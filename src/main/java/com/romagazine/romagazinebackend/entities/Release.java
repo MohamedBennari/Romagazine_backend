@@ -5,6 +5,8 @@ import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "releases")
@@ -22,6 +24,11 @@ public class Release {
     @JoinColumn(name = "artist_id", nullable = false)
     @JsonIgnoreProperties({"events", "user.password", "user.phoneNumber", "user.isActive"})
     private Artist artist;
+
+    @ElementCollection
+    @CollectionTable(name = "release_second_artists", joinColumns = @JoinColumn(name = "release_id"))
+    @Column(name = "artist_name")
+    private List<String> secondArtists = new ArrayList<>();
 
     @Column(nullable = false)
     private LocalDateTime releaseDate;
@@ -53,10 +60,11 @@ public class Release {
     public Release() {
     }
 
-    public Release(Long id, String title, Artist artist, LocalDateTime releaseDate, String soundcloudLink, String purchaseLink, String type, boolean veilhushRelease, String image, String description, boolean isActive, LocalDateTime createdAt) {
+    public Release(Long id, String title,List<String> secondArtists , Artist artist, LocalDateTime releaseDate, String soundcloudLink, String purchaseLink, String type, boolean veilhushRelease, String image, String description, boolean isActive, LocalDateTime createdAt) {
         this.id = id;
         this.title = title;
         this.artist = artist;
+        this.secondArtists = secondArtists;
         this.releaseDate = releaseDate;
         this.soundcloudLink = soundcloudLink;
         this.purchaseLink = purchaseLink;
@@ -66,6 +74,14 @@ public class Release {
         this.description = description;
         this.isActive = isActive;
         this.createdAt = createdAt;
+    }
+
+    public List<String> getSecondArtists() {
+        return secondArtists;
+    }
+
+    public void setSecondArtists(List<String> secondArtists) {
+        this.secondArtists = secondArtists;
     }
 
     public Long getId() {

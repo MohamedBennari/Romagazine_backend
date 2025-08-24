@@ -24,15 +24,15 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
-        // Check if user is approved
-        if (!Status.APPROVED.name().equals(user.getStatus())) {
+        if (user.getStatus() != Status.APPROVED) {
             throw new UserNotApprovedException("Your account is not approved. Please verify your email first.");
         }
 
-        return new org.springframework.security.core.userdetails.User(
+        return new CustomUserDetails(
+                user.getId(),
                 user.getUsername(),
                 user.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole()))
         );
     }
-} 
+}

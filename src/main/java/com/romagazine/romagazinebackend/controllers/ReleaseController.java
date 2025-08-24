@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -60,6 +61,7 @@ public class ReleaseController {
         return releaseService.getVeilhushReleases();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Release> createRelease(@Valid @RequestBody Release release) {
         Release savedRelease = releaseService.createRelease(release);
@@ -70,18 +72,21 @@ public class ReleaseController {
         return ResponseEntity.created(location).body(savedRelease);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Release> updateRelease(@PathVariable Long id, @Valid @RequestBody Release release) {
         Release updatedRelease = releaseService.updateRelease(id, release);
         return ResponseEntity.ok(updatedRelease);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRelease(@PathVariable Long id) {
         releaseService.deleteRelease(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Upload Release image", description = "Upload an image for a specific Release")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Image uploaded successfully",

@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -49,6 +50,7 @@ public class PodcastController {
         return podcastService.getPodcastsByArtist(artistId);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Podcast> createPodcast(@Valid @RequestBody Podcast podcast) {
         Podcast savedPodcast = podcastService.createPodcast(podcast);
@@ -59,18 +61,21 @@ public class PodcastController {
         return ResponseEntity.created(location).body(savedPodcast);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Podcast> updatePodcast(@PathVariable Long id, @Valid @RequestBody Podcast podcast) {
         Podcast updatedPodcast = podcastService.updatePodcast(id, podcast);
         return ResponseEntity.ok(updatedPodcast);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePodcast(@PathVariable Long id) {
         podcastService.deletePodcast(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Upload podcast image", description = "Upload an image for a specific podcast")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Image uploaded successfully",

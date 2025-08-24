@@ -47,23 +47,44 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize ->
                         // Public endpoints
                         authorize
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/auth/forgot-password").permitAll()
-                        .requestMatchers("/api/auth/reset-password").permitAll()
-                        .requestMatchers("/api/auth/verify-email").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll()
+                        .requestMatchers("/swagger-ui/**",
+                                         "/api-docs/**").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()
-                        .requestMatchers("/api/users/**").permitAll()
-                        .requestMatchers("/api/events/**").permitAll()
-                        .requestMatchers("/api/artists/**").permitAll()
-                        .requestMatchers("/api/articles/**").permitAll()
-                        .requestMatchers("/api/comments/**").permitAll()
-                        .requestMatchers("/api/pinned-events/**").permitAll()
-                        .requestMatchers("/api/artists/**").permitAll()
-                        .requestMatchers("/api/podcasts/**").permitAll()
-                        .requestMatchers("/api/releases/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
 
+                        .requestMatchers("/api/releases",
+                                         "/api/releases/*",
+                                         "/api/releases/artist/**",
+                                         "/api/releases/type/**",
+                                         "/api/releases/veilhush").permitAll()
+
+                        .requestMatchers("/api/podcasts",
+                                         "/api/podcasts/*",
+                                         "/api/podcasts/artist/*").permitAll()
+
+                        .requestMatchers("/api/pinned-events",
+                                         "/api/pinned-events/*",
+                                         "/api/pinned-events/event/*",
+                                         "/api/pinned-events/position/*").permitAll()
+
+                        .requestMatchers("/api/events/active",
+                                         "/api/events",
+                                         "/api/events/*",
+                                         "/api/events/location/*",
+                                         "/api/events/date-range",
+                                         "/api/events/banner").permitAll()
+
+                        .requestMatchers("/api/articles",
+                                         "/api/articles/*",
+                                         "/api/articles/author/*",
+                                         "/api/articles/category/*",
+                                         "/api/articles/tag/*").permitAll()
+
+                        .requestMatchers("/api/contact/**").permitAll()
+
+                        .requestMatchers("/api/comments/**").permitAll()
+
+                        .requestMatchers("/api/auth/**").permitAll()
                         // All other endpoints require authentication
                         .anyRequest().authenticated()
                 )

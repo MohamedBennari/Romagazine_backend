@@ -67,6 +67,7 @@ public class ReleaseService {
         release.setImage(releaseDetails.getImage());
         release.setDescription(releaseDetails.getDescription());
         release.setActive(releaseDetails.isActive());
+        release.setSecondArtists(releaseDetails.getSecondArtists());
         return releaseRepository.save(release);
     }
 

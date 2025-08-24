@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -38,15 +39,18 @@ public class EventController {
     @Autowired
     private FileStorageService fileStorageService;
 
+
     @GetMapping("/active")
     public List<Event> getAllactiveEvents() {
         return eventService.getAllactiveEvents();
     }
 
+
     @GetMapping
     public List<Event> getAllEvents() {
         return eventService.getAllEvents();
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Event> getEventById(@PathVariable Long id) {
@@ -55,10 +59,12 @@ public class EventController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+
     @GetMapping("/location/{location}")
     public List<Event> getEventsByLocation(@PathVariable String location) {
         return eventService.getEventsByLocation(location);
     }
+
 
     @GetMapping("/date-range")
     public List<Event> getEventsByDateRange(
@@ -67,11 +73,13 @@ public class EventController {
         return eventService.getEventsByDateRange(start, end);
     }
 
+
     @GetMapping("/banner")
     public List<Event> getBannerEvents() {
         return eventService.getBannerEvents();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Event> createEvent(@Valid @RequestBody Event event) {
         Event savedEvent = eventService.createEvent(event);
@@ -82,18 +90,21 @@ public class EventController {
         return ResponseEntity.created(location).body(savedEvent);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Event> updateEvent(@PathVariable Long id, @Valid @RequestBody Event event) {
         Event updatedEvent = eventService.updateEvent(id, event);
         return ResponseEntity.ok(updatedEvent);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
         eventService.deleteEvent(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{eventId}/interested/{userId}")
     public ResponseEntity<Event> addInterestedUser(@PathVariable Long eventId, @PathVariable Long userId) {
         User user = userService.getUserById(userId)
@@ -102,6 +113,7 @@ public class EventController {
         return ResponseEntity.ok(updatedEvent);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{eventId}/interested/{userId}")
     public ResponseEntity<Event> removeInterestedUser(@PathVariable Long eventId, @PathVariable Long userId) {
         User user = userService.getUserById(userId)
@@ -110,6 +122,7 @@ public class EventController {
         return ResponseEntity.ok(updatedEvent);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Upload event image", description = "Upload an image for a specific event (main, second, or third image)")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Image uploaded successfully",

@@ -50,7 +50,7 @@ public class EmailServiceImpl implements EmailService {
         try {
             Context context = new Context();
             context.setVariable("token", token);
-            context.setVariable("resetUrl", "http://localhost:8081/api/auth/reset-password?token=" + token);
+            context.setVariable("resetUrl", "http://localhost:4200/reset-password?token=" + token + "&email=" + to);
             
             String emailContent = templateEngine.process("email/password-reset-email", context);
             
@@ -87,6 +87,32 @@ public class EmailServiceImpl implements EmailService {
             mailSender.send(message);
         } catch (MessagingException e) {
             throw new RuntimeException("Failed to send welcome email", e);
+        }
+    }
+
+    @Override
+    public void sendContactEmail(String to, String nom, String prenom, String email, String objet, String message) {
+        try {
+            Context context = new Context();
+            context.setVariable("name", nom);
+            context.setVariable("prenom", prenom);
+            context.setVariable("email", email);
+            context.setVariable("objet", objet);
+            context.setVariable("message", message);
+
+            String emailContent = templateEngine.process("email/contact-email", context);
+
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+            helper.setFrom(fromEmail);
+            helper.setTo(to);
+            helper.setSubject("Nouveau message de contact : " + objet);
+            helper.setText(emailContent, true);
+
+            mailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Failed to send contact email", e);
         }
     }
 } 

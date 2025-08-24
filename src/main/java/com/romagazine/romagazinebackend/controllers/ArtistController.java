@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -31,11 +32,13 @@ public class ArtistController {
     @Autowired
     private FileStorageService fileStorageService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public List<Artist> getAllArtists() {
         return artistService.getAllArtists();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<Artist> getArtistById(@PathVariable Long id) {
         Optional<Artist> artist = artistService.getArtistById(id);
@@ -43,12 +46,14 @@ public class ArtistController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/stage-name/{stageName}")
     public ResponseEntity<Artist> getArtistByStageName(@PathVariable String stageName) {
         Artist artist = artistService.getArtistByStageName(stageName);
         return artist != null ? ResponseEntity.ok(artist) : ResponseEntity.notFound().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Artist> createArtist(@Valid @RequestBody Artist artist) {
         Artist savedArtist = artistService.createArtist(artist);
@@ -59,18 +64,21 @@ public class ArtistController {
         return ResponseEntity.created(location).body(savedArtist);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Artist> updateArtist(@PathVariable Long id, @Valid @RequestBody Artist artist) {
         Artist updatedArtist = artistService.updateArtist(id, artist);
         return ResponseEntity.ok(updatedArtist);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteArtist(@PathVariable Long id) {
         artistService.deleteArtist(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(params = "veilhush")
     public List<Artist> getVeilhushArtists(@RequestParam boolean veilhush) {
         if (veilhush) {
@@ -80,6 +88,7 @@ public class ArtistController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Upload artist profile picture", description = "Upload a profile picture for a specific artist")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Profile picture uploaded successfully",

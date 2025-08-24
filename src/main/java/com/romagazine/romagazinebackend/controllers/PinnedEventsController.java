@@ -5,6 +5,7 @@ import com.romagazine.romagazinebackend.services.PinnedEventsService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -31,12 +32,14 @@ public class PinnedEventsController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+
     @GetMapping("/event/{eventId}")
     public ResponseEntity<PinnedEvents> getPinnedEventByEventId(@PathVariable Long eventId) {
         Optional<PinnedEvents> pinnedEvent = pinnedEventsService.getPinnedEventByEventId(eventId);
         return pinnedEvent.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
 
     @GetMapping("/position/{position}")
     public ResponseEntity<PinnedEvents> getPinnedEventByPosition(@PathVariable int position) {
@@ -45,6 +48,7 @@ public class PinnedEventsController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<PinnedEvents> createPinnedEvent(@Valid @RequestBody PinnedEvents pinnedEvent) {
         PinnedEvents savedPinnedEvent = pinnedEventsService.createPinnedEvent(pinnedEvent);
@@ -55,12 +59,14 @@ public class PinnedEventsController {
         return ResponseEntity.created(location).body(savedPinnedEvent);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<PinnedEvents> updatePinnedEvent(@PathVariable Long id, @Valid @RequestBody PinnedEvents pinnedEvent) {
         PinnedEvents updatedPinnedEvent = pinnedEventsService.updatePinnedEvent(id, pinnedEvent);
         return ResponseEntity.ok(updatedPinnedEvent);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePinnedEvent(@PathVariable Long id) {
         pinnedEventsService.deletePinnedEvent(id);

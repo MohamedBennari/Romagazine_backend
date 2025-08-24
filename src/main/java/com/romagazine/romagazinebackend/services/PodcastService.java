@@ -56,6 +56,7 @@ public class PodcastService {
         podcast.setPublishedAt(podcastDetails.getPublishedAt());
         podcast.setActive(podcastDetails.isActive());
         podcast.setUpdatedAt(LocalDateTime.now());
+        podcast.setSecondArtists(podcastDetails.getSecondArtists());
 
         // Load artists properly if they're being updated
         if (podcastDetails.getArtists() != null && !podcastDetails.getArtists().isEmpty()) {
